@@ -17,7 +17,8 @@ spring:
           nacos:
             server-addr: localhost:8848
             dataId: cloudalibaba-sentinel-service
-            groupId: DEFAULT_GROUP
+            groupId: MYTEST_GROUP
+            namespace: cf511321-7b07-481f-9af0-18d4fde51e41
             data-type: json
             rule-type: flow
 
