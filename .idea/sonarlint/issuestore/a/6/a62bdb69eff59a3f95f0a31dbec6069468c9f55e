@@ -1,20 +1,37 @@
 
-Q	java:S125!"<This block of commented-out lines of code should be removed.(©½Ğ²
-V	java:S125u"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
-Q	java:S125^"<This block of commented-out lines of code should be removed.(¦Ï¹„
-V	java:S125{"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
-V	java:S125d"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
-Q	java:S1254"<This block of commented-out lines of code should be removed.(¼Âõ
-]	java:S125f"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8Ÿ¢˜‹æ.
-b	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(º´üÉ
-]	java:S125n"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8°÷˜‹æ.
-]	java:S125b"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8¥–‹æ.
-d
-java:S2184r"GCast one of the operands of this multiplication operation to a "float".(‚’æ£8ŸŸ—‹æ.
-i	java:S116"ORename this field "PATH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îáÅşÿÿÿÿ
-V	java:S125l"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
-X	java:S125H"<This block of commented-out lines of code should be removed.(ıæäâ8öš‹æ.
-Q	java:S1257"<This block of commented-out lines of code should be removed.(ãØÎ­
-V	java:S125h"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
-]	java:S125j"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8‘×˜‹æ.
-V	java:S125x"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ
+H
+java:S3457ó"%String contains no format specifiers.(ÔôÃËÿÿÿÿÿ8ñ·´âç.
+e
+java:S2184¥"GCast one of the operands of this multiplication operation to a "float".(‚’æ£8ñ·´âç.
+X	java:S125<"<This block of commented-out lines of code should be removed.(¼Âõ8ûÌş¹æ.
+^	java:S125¨"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+i	java:S101$"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(º´üÉ8ûÌş¹æ.
+^	java:S125¡"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+Y	java:S125ƒ"<This block of commented-out lines of code should be removed.(µ—ñò8ÄÄŠãç.
+V	java:S106î"9Replace this use of System.out or System.err by a logger.(Õğª§8ñ·´âç.
+]	java:S125i"<This block of commented-out lines of code should be removed.(Î„æ²şÿÿÿÿ8Çòûâç.
+X	java:S125±"<This block of commented-out lines of code should be removed.(úù¥8ñ·´âç.
+^	java:S125›"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+^	java:S125"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+Y	java:S125‘"<This block of commented-out lines of code should be removed.(¦Ï¹„8ñ·´âç.
+^	java:S125®"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+^	java:S125—"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+X	java:S125?"<This block of commented-out lines of code should be removed.(ãØÎ­8ûÌş¹æ.
+X	java:S125\"<This block of commented-out lines of code should be removed.(ÙÉê8çºÙâç.
+^	java:S125Ÿ"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+K
+java:S1128".Remove this unused import 'java.util.Objects'.(¼¸õ›8€ƒ©ßç.
+^	java:S125™"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+j
+java:S5361e"HReplace this call to "replaceAll()" by a call to the "replace()" method.(Íâ™½şÿÿÿÿ8†Šüâç.
+M
+java:S2201ó"*The return value of "format" must be used.(ÔôÃËÿÿÿÿÿ8ñ·´âç.
+^	java:S125«"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+_
+java:S1128"=Remove this unused import 'com.itextpdf.layout.font.FontSet'.(·’îŸúÿÿÿÿ8Äê˜Şç.
+p	java:S116%"ORename this field "PATH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îáÅşÿÿÿÿ8ûÌş¹æ.
+^	java:S125º"<This block of commented-out lines of code should be removed.(öÆÛïûÿÿÿÿ8«†ãç.
+]	java:S125Z"<This block of commented-out lines of code should be removed.(ˆ‡öÎÿÿÿÿÿ8·†äç.
+X	java:S125)"<This block of commented-out lines of code should be removed.(©½Ğ²8ûÌş¹æ.
+X	java:S125P"<This block of commented-out lines of code should be removed.(ıæäâ8ûÌş¹æ.
+^	java:S125•"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
