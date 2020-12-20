@@ -185,17 +185,24 @@ public class exportPDFTest {
         ConverterProperties proper = new ConverterProperties();
         proper.setFontProvider(fontProvider);
         proper.setCharset("UTF-8");
-        String oldcontent = "注：" +
-                "<table border=\"1\">\n" +
-                "  <tr>\n" +
-                "    <th>Month&nbsp;&nbsp;&nbsp;&nbsp;我草泥马1212414</th>\n" +
-                "    <th>Savings</th>\n" +
-                "  </tr>\n" +
-                "  <tr>\n" +
-                "    <td>January</td>\n" +
-                "    <td>$100</td>\n" +
-                "  </tr>\n" +
-                "</table>";
+        String oldcontent = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n" +
+                "<title>HTML报表测试</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<!-- 通过一个HTML链接来导出目标报表模版的PDF格式报表 -->\n" +
+                "<a href=\"<%=request.getContextPath() %>/ureport/pdf?_u=file:demo.ureport.xml\">导出PDF格式报表</a>\n" +
+                "<p></p>\n" +
+                "<style type=\"text/css\">\n" +
+                "._A1{width:320pt;text-align:center;vertical-align:middle;font-size:10pt;border-left:solid 1px rgb(0,0,0);border-right:solid 1px rgb(0,0,0);border-top:solid 1px rgb(0,0,0);border-bottom:solid 1px rgb(0,0,0);}\n" +
+                "</style>\n" +
+                "<table border='0' style='margin:auto;border-collapse:collapse;width:320pt'><tr style=\"height:18pt\"><td rowspan=\"3\" colspan=\"4\" class='_A1'  >\n" +
+                "<h1>一列：</h1>\n" +
+                "CO<sub>2</sub></td></tr><tr style=\"height:18pt\"></tr><tr style=\"height:18pt\"></tr></table>\n" +
+                "</body>\n" +
+                "</html>";
         Div overall = new Div();
         java.util.List<IElement> iElements = getFixContent(oldcontent, proper);
         for (IElement iElement : iElements) {
