@@ -92,7 +92,7 @@ public class exportPDFTest {
         /*fontProvider.addFont(fontProvider.getClass().getClassLoader().getResource("font/simsun.ttc").getPath());
         fontProvider.addFont(fontProvider.getClass().getClassLoader().getResource("font/SourceHanSansCN-Regular.ttf").getPath());
         fontProvider.addStandardPdfFonts();*/
-        fontProvider.addFont("E:\\Java从零开始\\JavaWeb\\SpringCloud\\mySpringCloudPractice\\Test-pdf\\src\\main\\resources\\font\\STSONG.TTF"
+        fontProvider.addFont("C:\\Windows\\Fonts\\STSONG.TTF"
         ,PdfEncodings.IDENTITY_H);
         return fontProvider;
     }
@@ -162,7 +162,7 @@ public class exportPDFTest {
 //        table.addCell(cell);
         cell = new Cell(3, 2);
         cell.add(new Paragraph("材料说明:").setFont(sysFont).setTextAlignment(TextAlignment.LEFT).setVerticalAlignment(VerticalAlignment.TOP).setFontSize(8));
-        cell.add(new Paragraph("NAS514 螺钉312313         123123").setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
+        cell.add(new Paragraph("NAS514 螺钉").setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
         cell.setHeight(hsize * 10);
         table.addCell(cell);
         cell = new Cell(1, 2).add(new Paragraph("材料工程: 黄裳").setFont(sysFont));
@@ -200,7 +200,8 @@ public class exportPDFTest {
                 "</style>\n" +
                 "<table border='0' style='margin:auto;border-collapse:collapse;width:320pt'><tr style=\"height:18pt\"><td rowspan=\"3\" colspan=\"4\" class='_A1'  >\n" +
                 "<h1>一列：</h1>\n" +
-                "CO<sub>2</sub></td></tr><tr style=\"height:18pt\"></tr><tr style=\"height:18pt\"></tr></table>\n" +
+                "CO<sub>2</sub>热驱蚊器恶趣味&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微软认为热望&nbsp;&nbsp;&nbsp;我爱1234你</td></tr><tr style=\"height:18pt\"></tr><tr style=\"height:18pt\"></tr></table>\n" +
+                "CO<sub>123</sub>" +
                 "</body>\n" +
                 "</html>";
         Div overall = new Div();
