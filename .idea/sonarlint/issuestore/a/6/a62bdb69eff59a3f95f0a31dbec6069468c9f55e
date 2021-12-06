@@ -1,0 +1,36 @@
+
+^	java:S125¬"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+Y	java:S125„"<This block of commented-out lines of code should be removed.(µ—ñò8ÄÄŠãç.
+^	java:S125"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+]	java:S125Z"<This block of commented-out lines of code should be removed.(ˆ‡öÎÿÿÿÿÿ8·†äç.
+^	java:S125¯"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+M
+java:S2201û"*The return value of "format" must be used.(ÔôÃËÿÿÿÿÿ8ñ·´âç.
+X	java:S125)"<This block of commented-out lines of code should be removed.(©½Ğ²8ûÌş¹æ.
+X	java:S125<"<This block of commented-out lines of code should be removed.(¼Âõ8ûÌş¹æ.
+H
+java:S3457û"%String contains no format specifiers.(ÔôÃËÿÿÿÿÿ8ñ·´âç.
+X	java:S125?"<This block of commented-out lines of code should be removed.(ãØÎ­8ûÌş¹æ.
+]	java:S125j"<This block of commented-out lines of code should be removed.(Î„æ²şÿÿÿÿ8Çòûâç.
+^	java:S125–"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+e
+java:S2184¦"GCast one of the operands of this multiplication operation to a "float".(‚’æ£8ñ·´âç.
+^	java:S125©"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+K
+java:S1128".Remove this unused import 'java.util.Objects'.(¼¸õ›8€ƒ©ßç.
+^	java:S125œ"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+^	java:S125 "<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+_
+java:S1128"=Remove this unused import 'com.itextpdf.layout.font.FontSet'.(·’îŸúÿÿÿÿ8Äê˜Şç.
+^	java:S125š"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+X	java:S125\"<This block of commented-out lines of code should be removed.(ÙÉê8ãû¶äç.
+^	java:S125¢"<This block of commented-out lines of code should be removed.(®‰ş´ıÿÿÿÿ8ñ·´âç.
+X	java:S125²"<This block of commented-out lines of code should be removed.(úù¥8ñ·´âç.
+Y	java:S125’"<This block of commented-out lines of code should be removed.(¦Ï¹„8ñ·´âç.
+V	java:S106ö"9Replace this use of System.out or System.err by a logger.(Õğª§8ñ·´âç.
+p	java:S116%"ORename this field "PATH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(îáÅşÿÿÿÿ8ûÌş¹æ.
+i	java:S101$"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(º´üÉ8ûÌş¹æ.
+^	java:S125˜"<This block of commented-out lines of code should be removed.(Ç´Ÿøùÿÿÿÿ8ñ·´âç.
+j
+java:S5361f"HReplace this call to "replaceAll()" by a call to the "replace()" method.(Íâ™½şÿÿÿÿ8†Šüâç.
+X	java:S125P"<This block of commented-out lines of code should be removed.(ıæäâ8ûÌş¹æ.

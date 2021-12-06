@@ -15,8 +15,5 @@ spring:
         group: MYTEST_GROUP
         namespace: cf511321-7b07-481f-9af0-18d4fde51e41
 
-
 # ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
 # nacos-config-client-dev.yaml
-
-# nacos-config-client-test.yaml   ----> config.info
