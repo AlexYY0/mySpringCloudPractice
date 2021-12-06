@@ -1,32 +1,49 @@
 package client;
 
+import com.itextpdf.forms.PdfAcroForm;
+import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
+import com.itextpdf.kernel.pdf.annot.PdfFileAttachmentAnnotation;
+import com.itextpdf.kernel.pdf.filespec.PdfFileSpec;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.font.FontProvider;
-import com.itextpdf.layout.font.FontSet;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import com.itextpdf.kernel.pdf.PdfDocument;
+import org.python.core.Py;
+import org.python.core.PySystemState;
+import org.python.util.PythonInterpreter;
 
+import javax.script.*;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.*;
 
 /**
  * @Author: EmperorWS
  * @Date: 2020/8/13 15:29
  * @Description:
  **/
+@Slf4j
 public class exportPDFTest {
     String PATH = "uploadFiles/";
     String fileName = PATH + "testPDF.pdf";
@@ -141,33 +158,49 @@ public class exportPDFTest {
         }
     }*/
 
-    private java.util.List<IElement> getFixContent(String content,ConverterProperties converterProperties) {
+    @Test
+    public void createTablePDF() throws FileNotFoundException {
+        PdfWriter writer = new PdfWriter(fileName);
+        PdfDocument pdf = new PdfDocument(writer);
+        try (Document document = new Document(pdf, PageSize.A4)) {
+            //document.open();
+            document.showTextAligned(new Paragraph("SAMC 51-28 (2009-11)").setFontSize(8), 35, 806, TextAlignment.LEFT);
+            document.showTextAligned(new Paragraph("MAT NO.88").setFontSize(8), 559, 806, TextAlignment.RIGHT);
+            Table table = createTable();
+            document.add(table);
+            //Add attachment
+            //1.
+            /*PdfDictionary parameters = new PdfDictionary();
+            parameters.put(PdfName.ModDate, new PdfDate().getPdfObject());
+            PdfFileSpec fileSpec = PdfFileSpec.createEmbeddedFileSpec(
+                    pdf, Files.readAllBytes(Paths.get("uploadFiles","Specimen_RawData_2.csv")), "Specimen_RawData_2.csv",
+                    "Specimen_RawData_2.csv", new PdfName("text/csv"), parameters,
+                    PdfName.Data);
+            fileSpec.put(new PdfName("AFRelationship"), new PdfName("Data"));
+            pdf.addFileAttachment("Specimen_RawData_2.csv", fileSpec);
+            PdfArray array = new PdfArray();
+            array.add(fileSpec.getPdfObject().getIndirectReference());
+            pdf.getCatalog().put(new PdfName("AF"), array);*/
+            //2。
+            Rectangle rect = new Rectangle(36, 700, 100, 100);
+            PdfFileSpec attachment = PdfFileSpec.createEmbeddedFileSpec(pdf, "C:\\Users\\EmperorWS\\Desktop\\历史数据兼容方案.docx", "display附件123", null);
+            PdfAnnotation pdfAnnotation = new PdfFileAttachmentAnnotation(rect, attachment).setContents("Click me");
+            pdf.getLastPage().addAnnotation(pdfAnnotation);
+            //3.
+            /*PdfFileSpec attachment = PdfFileSpec.createEmbeddedFileSpec(pdf, "C:\\Users\\EmperorWS\\Desktop\\历史数据兼容方案.docx", "display附件123", null);
+            pdf.addFileAttachment("testsetstsetstste",attachment);*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private java.util.List<IElement> getFixContent(String content, ConverterProperties converterProperties) {
         if (content.startsWith("<div>")) {
             content = content.replaceAll("<div>", "<div style='line-height:18pt;font-size:16px;'>");
         } else {
             content = "<div style='line-height:18pt;font-size:16px;'>" + content + "</div>";
         }
         return HtmlConverter.convertToElements(content, converterProperties);
-    }
-
-    private void addParagraphStyleCircle(Style style, java.util.List<IElement> children) {
-        for (IElement child : children) {
-            if (child instanceof Paragraph) {
-                Paragraph element = (Paragraph) child;
-                element.addStyle(style);
-                java.util.List<IElement> children1 = element.getChildren();
-                this.addParagraphStyleCircle(style, children1);
-            }
-            if (child instanceof Div) {
-                Div div = (Div) child;
-                java.util.List<IElement> children1 = div.getChildren();
-                this.addParagraphStyleCircle(style, children1);
-            }
-            if (child instanceof Text) {
-                Text text = (Text) child;
-                text.addStyle(style);
-            }
-        }
     }
 
     public Table createTable() throws IOException {
@@ -183,7 +216,7 @@ public class exportPDFTest {
         table.setHeight(UnitValue.createPercentValue(100));
         Cell cell;
         int hsize = 30;
-        cell = new Cell(2,2).add(new Paragraph("材料接收试验").setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
+        cell = new Cell(2, 2).add(new Paragraph("材料接收试验").setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
         //cell.setHeight(hsize*2);
         cell.setHorizontalAlignment(HorizontalAlignment.CENTER);//设置水平居中
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);//设置垂直居中
@@ -193,43 +226,35 @@ public class exportPDFTest {
         //cell.add(new Paragraph("NASM 7839").setTextAlignment(TextAlignment.CENTER).setFont(sysFont));
         //cell.setHeight(hsize);
         table.addCell(cell);
-        cell = new Cell(1,1);
+        cell = new Cell(1, 1);
         cell.add(new Paragraph("日期: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont));
         cell.add(new Paragraph("2020-01-14").setTextAlignment(TextAlignment.CENTER).setFont(sysFont));
         //cell.setHeight(hsize);
         table.addCell(cell);
-        cell = new Cell(1,1);
+        cell = new Cell(1, 1);
         cell.add(new Paragraph("版次: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont));
         cell.add(new Paragraph("B").setTextAlignment(TextAlignment.CENTER).setFont(sysFont));
         //cell.setHeight(hsize);
         table.addCell(cell);
-        cell = new Cell(3,2);
-        cell.add(new Paragraph("材料说明:").setFont(sysFont).setRelativePosition(0,0,0,32).setTextAlignment(TextAlignment.LEFT).setFontSize(8));
-        cell.add(new Paragraph("NAS514 螺钉").setFont(sysFont).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE);
+        cell = new Cell(3, 2);
+        cell.add(new Paragraph("材料说明:").setFont(sysFont).setRelativePosition(0, 0, 0, 32).setTextAlignment(TextAlignment.LEFT).setFontSize(8));
+        cell.add(new Paragraph("NAS514 螺钉                                                         24234").setFont(sysFont).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE);
         //cell.setHeight(hsize*10);
         table.addCell(cell);
-        cell = new Cell(1,2);
+        cell = new Cell(1, 2);
         cell.add(new Paragraph("材料工程: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont).add(new Paragraph("黄裳").setFont(sysFont)));
         //cell.setHeight(hsize);
         table.addCell(cell);
-        cell = new Cell(1,2).add(new Paragraph("理化计量中心: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont).add(new Paragraph("张三").setFont(sysFont)));
+        cell = new Cell(1, 2).add(new Paragraph("理化计量中心: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont).add(new Paragraph("张三").setFont(sysFont)));
         //cell.setHeight(hsize);
         table.addCell(cell);
-        cell = new Cell(1,2).add(new Paragraph("质保工艺控制: ").setTextAlignment(TextAlignment.LEFT).setFont(sysFont).add(new Paragraph("李四").setFont(sysFont)));
+        cell = new Cell(1, 2).add(new Paragraph("质保工艺控制:").setTextAlignment(TextAlignment.LEFT).setFont(sysFont).add(new Paragraph("李四").setFont(sysFont)));
         //cell.setHeight(hsize);
         table.addCell(cell);
 
-        String content = "<div><span style='text-align:left'>注1：夹层长度小</span><span style='text-align:right'>注1：夹层长度小</span></div><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>" +
-                "<span style='color:black;background-color:red;font-size:20px'>注1：夹层长度小于3倍公称直径的全螺纹紧固件，不要求拉伸试验；</span><p>注2：验收指标按验收标准或采购规格，当标准与采购规范要求不一致时，以标准要求为准；</p><p>注3：公称直径小于0.19in时，不需要硬度测试；注4：若已进行拉伸试验，不可再测试硬度。</p>";
+        //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        String oldContent = "<p>测试测试2</p>";
+        String content = oldContent.replaceAll("&nbsp;", "\t");
         ConverterProperties converterProperties;
         FontProvider fontProvider = new FontProvider();
         fontProvider.addFont(sysFont.getFontProgram(), "UniGB-UCS2-H");
@@ -237,11 +262,12 @@ public class exportPDFTest {
         converterProperties.setFontProvider(fontProvider);
 
         Div overall = new Div();
-        java.util.List<IElement> iElements = getFixContent(content,converterProperties);
+        java.util.List<IElement> iElements = getFixContent(oldContent, converterProperties);
         for (IElement iElement : iElements) {
             Style style = new Style();
             style.setFontSize(10);
             style.setCharacterSpacing(0.7f);
+            //style.setFont(sysFont);
             if (iElement instanceof Div) {
                 Div div = (Div) iElement;
                 java.util.List<IElement> children = div.getChildren();
@@ -254,27 +280,223 @@ public class exportPDFTest {
             }
         }
 
-        cell = new Cell(1,4).add(overall);
+        cell = new Cell(1, 4).add(overall);
+        //overall.setRotationAngle(Math.PI/2);
         table.addCell(cell);
         return table;
     }
-    @Test
-    public void createTablePDF() throws FileNotFoundException {
-        PdfWriter writer = new PdfWriter(fileName);
-        PdfDocument pdf = new PdfDocument(writer);
-        Document document = new Document(pdf, PageSize.A4);
-        try {
-            //document.open();
-            document.showTextAligned(new Paragraph("SAMC 51-28 (2009-11)").setFontSize(8), 35, 806, TextAlignment.LEFT);
-            document.showTextAligned(new Paragraph("MAT NO.88").setFontSize(8), 559, 806, TextAlignment.RIGHT);
-            Table table = createTable();
-            document.add(table);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            document.close();
+
+    private void addParagraphStyleCircle(Style style, java.util.List<IElement> children) throws IOException {
+        PdfFont sysFont = PdfFontFactory.createFont("STSongStd-Light",
+                "UniGB-UCS2-H", false);
+        for (IElement child : children) {
+            if (child instanceof Div) {
+                Div div = (Div) child;
+                java.util.List<IElement> children1 = div.getChildren();
+                this.addParagraphStyleCircle(style, children1);
+            } else if (child instanceof Paragraph) {
+                Paragraph element = (Paragraph) child;
+                element.addStyle(style);
+                element.setFont(sysFont);
+                java.util.List<IElement> children1 = element.getChildren();
+                this.addParagraphStyleCircle(style, children1);
+            } else if (child instanceof Table) {
+                Table element = (Table) child;
+                java.util.List<IElement> children1 = element.getChildren();
+                this.addParagraphStyleCircle(style, children1);
+            } else if (child instanceof Cell) {
+                Cell element = (Cell) child;
+                java.util.List<IElement> children1 = element.getChildren();
+                this.addParagraphStyleCircle(style, children1);
+            } else if (child instanceof Text) {
+                Text text = (Text) child;
+                text.setFont(sysFont);
+                text.addStyle(style);
+            }
         }
+    }
+
+    @Test
+    public void testFor() {
+        long start1 = System.currentTimeMillis();
+        for (int i = 0; i < 1000000000; i++) {
+            for (int j = 0; j < 100; j++) {
+                //System.out.println(i+","+j);
+            }
+        }
+        long end1 = System.currentTimeMillis();
+        System.out.println("此处消耗了（s）: " + (end1 - start1));
+
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 1000000000; j++) {
+                //System.out.println(i+","+j);
+            }
+        }
+        long end2 = System.currentTimeMillis();
+        System.out.println("此处消耗了（s）: " + (end2 - start2));
+    }
+
+    @Test
+    public void creatPdf() throws IOException {
+        String src = "C:\\Users\\EmperorWS\\Desktop\\test.pdf";
+        String dest = "C:\\Users\\EmperorWS\\Desktop\\test2.pdf";
+
+        //处理中文问题
+        PdfFont font = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", false);
+        PdfDocument pdf = new PdfDocument(new PdfReader(src), new PdfWriter(dest));
+
+        PdfAcroForm form = PdfAcroForm.getAcroForm(pdf, true);
+        Map<String, PdfFormField> fields = form.getFormFields();
+        fields.get("testName").setValue("EmperorWS");
+        fields.get("fabricationChargeBy").setValue("Saber");
+
+        Table table = new Table(2);
+
+        //表格 一行数据是一个list
+        List<String> list = new ArrayList<>();
+        list.add("日期");
+        list.add("金额");
+
+        List<String> list2 = new ArrayList<>();
+        list2.add("2018-01-01");
+        list2.add("100");
+
+        List<List<String>> List = new ArrayList<>();
+        List.add(list);
+        List.add(list2);
+
+        //表格数据填写
+        for (int i = 0; i < 2; i++) {
+            List<String> list0 = List.get(i);
+            for (int j = 0; j < 2; j++) {
+                Paragraph paragraph = new Paragraph(String.valueOf(list0.get(j)));
+                Cell cell = new Cell();
+                cell.add(paragraph)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setFont(font);
+                table.addCell(cell);
+            }
+        }
+
+        pdf.close();
+    }
+
+    /**
+     * Java自带的字符串公式计算
+     */
+    @Test
+    public void javaCalculate() {
+        ScriptEngine jse = new ScriptEngineManager().getEngineByName("JavaScript");
+        /*String str = "result = Math.sqrt(calc[1].a,calc[1].b)," +
+                "result2 = Math.pow(calc[1].a,calc[1].b)";*/
+        String str = "for(var i in calc) { calc[i].c = calc[i].a+calc[i].b }";
+        List<Map<String, Object>> param = new ArrayList<>();
+        Map<String, Object> m1 = new HashMap<>(1);
+        m1.put("a", 0.7);
+        m1.put("b", 0.1);
+        m1.put("c", 100);
+        param.add(m1);
+        Map<String, Object> m2 = new HashMap<>(1);
+        m2.put("a", 0.1);
+        m2.put("b", 0.3);
+        m2.put("c", 100);
+        param.add(m2);
+        jse.put("result", 200);
+        jse.put("calc", param);
+        // 判断这个脚本引擎是否支持编译功能
+        if (jse instanceof Compilable) {
+            Compilable compEngine = (Compilable) jse;
+            try {
+                // 进行编译
+                CompiledScript script = compEngine.compile(str);
+                //执行脚本
+                script.eval();
+                ScriptEngine engine = script.getEngine();
+                Map<String, Object> test = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                log.info("结果：result = {}", test.get("calc"));
+            } catch (ScriptException e) {
+                log.error(e.getMessage());
+            }
+        } else {
+            log.error("这个脚本引擎不支持编译!");
+        }
+    }
+
+    @Test
+    public void evalEx() {
+        /*String str = "import java.math.RoundingMode; for(Map<String,Objects> i in calc) {" +
+                "i.c = ((BigDecimal)i.a+(BigDecimal)i.b).setScale(5,RoundingMode.HALF_DOWN).doubleValue()}";*/
+        String str = "import java.math.RoundingMode; for(Map<String,Objects> i in calc) {" +
+                "BigDecimal a = new BigDecimal(i.a.toString());" +
+                "BigDecimal b = new BigDecimal(i.b.toString());" +
+                "i.c = a+b" +
+                "}";
+        Map<String, Object> allParam = new HashMap<>(1);
+        List<Map<String, Object>> param = new ArrayList<>(2);
+        Map<String, Object> m1 = new HashMap<>(1);
+        m1.put("a", 0.7);
+        m1.put("b", 0.1);
+        m1.put("c", 100);
+        param.add(m1);
+        Map<String, Object> m2 = new HashMap<>(1);
+        m2.put("a", 0.1);
+        m2.put("b", 0.3);
+        m2.put("c", 100);
+        param.add(m2);
+        allParam.put("calc", param);
+        Binding binding = new Binding(allParam);
+        binding.setVariable("language", "Groovy");
+        GroovyShell shell = new GroovyShell(binding);
+        shell.evaluate(str);
+        System.out.println(binding.getVariable("calc"));
+    }
+
+    @Test
+    public void abCalculate() {
+        Properties props = new Properties();
+        props.put("python.console.encoding", "UTF-8");
+        props.put("python.security.respectJavaAccessibility", "false");
+        props.put("python.import.site", "false");
+        Properties preprops = System.getProperties();
+        PythonInterpreter.initialize(props, preprops, new String[]{});
+        String[] path = new String[]{"C:\\Users\\EmperorWS\\Desktop\\calculate", "D:\\Python\\Lib\\site-packages\\numpy", "D:\\Python\\Lib\\site-packages\\scipy"};
+        String path0 = "C:\\Users\\EmperorWS\\Desktop\\calculate";
+        String path1 = "D:\\Python\\Lib\\site-packages";
+        //String path2 = "D:\\Python\\Lib\\site-packages\\scipy";
+        PySystemState sys = Py.getSystemState();
+        sys.path.add(path0);
+        sys.path.add(path1);
+        //sys.path.add(path2);
+        System.out.println(sys.path.toString());
+
+        // 实例化环境和代码执行
+        PythonInterpreter interpreter = new PythonInterpreter();
+        interpreter.execfile("C:\\Users\\EmperorWS\\Desktop\\calculate\\callABcompute.py");
+    }
+
+    @Test
+    public void abCalculate1() {
+        Process proc;
+        try {
+            proc = Runtime.getRuntime().exec("D:/Python/python.exe C:/Users/EmperorWS/Desktop/calculate/callABcompute.py");
+            //用输入输出流来截取结果
+            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "GBK"));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+            in.close();
+            proc.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void boolTest() {
+        boolean b = Boolean.parseBoolean("Y");
+        System.out.println(b);
     }
 }
