@@ -14,7 +14,6 @@ import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
 import com.itextpdf.kernel.pdf.annot.PdfFileAttachmentAnnotation;
 import com.itextpdf.kernel.pdf.filespec.PdfFileSpec;
 import com.itextpdf.kernel.pdf.navigation.PdfExplicitDestination;
-import com.itextpdf.kernel.pdf.navigation.PdfStringDestination;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.*;
@@ -36,8 +35,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author: EmperorWS
@@ -180,11 +183,11 @@ public class exportPDFTest {
             PdfArray array = new PdfArray();
             array.add(fileSpec.getPdfObject().getIndirectReference());
             pdf.getCatalog().put(new PdfName("AF"), array);*/
-            //2。
-            Rectangle rect = new Rectangle(36, 700, 100, 100);
+            //2。注释的形式
+            /*Rectangle rect = new Rectangle(36, 700, 100, 100);
             PdfFileSpec attachment = PdfFileSpec.createEmbeddedFileSpec(pdf, "C:\\Users\\EmperorWS\\Desktop\\历史数据兼容方案.docx", "display附件123", null);
             PdfAnnotation pdfAnnotation = new PdfFileAttachmentAnnotation(rect, attachment).setContents("Click me");
-            pdf.getLastPage().addAnnotation(pdfAnnotation);
+            pdf.getLastPage().addAnnotation(pdfAnnotation);*/
             //3.
             PdfFileSpec attachment1 = PdfFileSpec.createEmbeddedFileSpec(pdf, "C:\\Users\\EmperorWS\\Desktop\\命令大全.txt", "命令大全.txt", null);
             pdf.addFileAttachment("attachment1", attachment1);
@@ -219,7 +222,13 @@ public class exportPDFTest {
         cell = new Cell(1, 4).add(new Paragraph("Repeat Title").setFont(sysFont));
         table.addHeaderCell(cell);
         int hsize = 30;
-        cell = new Cell(2, 2).add(new Paragraph("材料接收试验").setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
+        Rectangle rect = new Rectangle(36, 700, 10, 10);
+        PdfFileSpec attachment = PdfFileSpec.createEmbeddedFileSpec(pdf, "C:\\Users\\EmperorWS\\Desktop\\123.png", "display附件11331323", null);
+        PdfAnnotation fileAnnotation = new PdfFileAttachmentAnnotation(rect, attachment).setContents("点击打开附件");
+        cell = new Cell(2, 2).add(new Paragraph("材料接收试验 goto PdfAnnotation：")
+                .setAction(PdfAction.createNamed(PdfName.LastPage))
+                .setFont(sysFont).setTextAlignment(TextAlignment.CENTER));
+        //4pdf.getFirstPage().addAnnotation(fileAnnotation);
         //cell.setHeight(hsize*2);
         cell.setHorizontalAlignment(HorizontalAlignment.CENTER);//设置水平居中
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);//设置垂直居中
@@ -643,5 +652,93 @@ public class exportPDFTest {
     public void boolTest() {
         boolean b = Boolean.parseBoolean("Y");
         System.out.println(b);
+        String s = "test" + Double.parseDouble("3.0") * Double.parseDouble("2.0") + "Y";
+        System.out.println(s);
+    }
+
+    @Test
+    public void formateData() throws ParseException {
+        String dateTime1 = "2020-01-13T16:00:00.000 EDT";
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        SimpleDateFormat defaultFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time1 = format1.parse(dateTime1);
+        String result1 = defaultFormat1.format(time1);
+        System.out.println(result1);
+
+        String dateTime2 = "2020-01-13T16:00:00.000 UTC";
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS z");
+        SimpleDateFormat defaultFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time2 = format2.parse(dateTime2);
+        String result2 = defaultFormat2.format(time2);
+        System.out.println(result2);
+
+        Date one = new Date();
+        SimpleDateFormat format3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        SimpleDateFormat format4 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSz");
+        String result3 = format3.format(time2);
+        System.out.println(result3);
+    }
+
+    @Test
+    public void threadPoolTest() throws InterruptedException {
+        CountDownLatch count = new CountDownLatch(31);
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 10,
+                60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>()
+                , new CustomerThreadFactory(), (r, executor) -> {
+            if (!executor.isShutdown()) {
+                new Thread(r, "other thread").start();
+            }
+        });
+        for (long i = 0; i < 310_000_000; i++) {
+            long finalI = i;
+            /*if (i == 15) {
+                threadPool.execute(() -> {
+                    throw new RuntimeException(Thread.currentThread().getName() + ":" + "Error" + finalI);
+                });
+            }*/
+            threadPool.execute(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName() + ":" + finalI);
+                count.countDown();
+            });
+        }
+        count.await();
+        System.out.println("CountDownLatch is over");
+        while (!threadPool.isShutdown()) {
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println("threadPool is over?");
+        }
+        System.out.println("threadPool is over.");
+    }
+}
+
+/**
+ * 自定义线程创建工厂类
+ */
+class CustomerThreadFactory implements ThreadFactory {
+    private static final AtomicInteger poolNumber = new AtomicInteger(1);
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final String namePrefix;
+
+    CustomerThreadFactory() {
+        namePrefix = "myPool-" +
+                poolNumber.getAndIncrement() +
+                "-thread-";
+    }
+
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread t = new Thread(r,
+                namePrefix + threadNumber.getAndIncrement());
+        if (t.isDaemon())
+            t.setDaemon(false);
+        if (t.getPriority() != Thread.NORM_PRIORITY)
+            t.setPriority(Thread.NORM_PRIORITY);
+        return t;
     }
 }
